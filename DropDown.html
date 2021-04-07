@@ -6,7 +6,7 @@
 </head>
 <body onload="placeCoutry()">
 
-<select id="country" name="coutryList" class="widget" onchange="myFunction()">
+<select id="country" name="coutryList" class="widget" onchange="ChangeStatesList()">
     <option value="NONE">NONE</option>
 
 </select>
@@ -274,40 +274,46 @@
         'Zimbabwe': ['NONE', 'Bulawayo', 'Harare', 'ManicalandMashonaland Central', 'Mashonaland East', 'Mashonaland West', 'Masvingo', 'Matabeleland North', 'Matabeleland South', 'Midlands']
     };
 
-    var prvCounty = "NONE";
-    var firstTime = true;
+    let prvCountyLoaded = "NONE";
+    let curCountryLoaded = "NONE";
+    let firstTime = true;
+    let useSaved = false;
 
     function placeCoutry() {
         if (firstTime) {
-            var curCountry = document.getElementById("country");
+            const curCountry = document.getElementById("country");
             curCountry.innerText = '';
-            for (var country of Object.keys(dictstatesListCountryWise)) {
-                var element = document.createElement("option");
+            for (const country of Object.keys(dictstatesListCountryWise)) {
+                const element = document.createElement("option");
                 element.innerText = country;
                 curCountry.append(element);
             }
             firstTime = false;
+            curCountryLoaded = localStorage.getItem("curCountryLoaded")
+            if (curCountryLoaded !== null) {
+                useSaved = true;
+                ChangeStatesList();
+            }
         }
     }
 
-
-    function myFunction() {
-
-        var curCountry = document.getElementById("country").value;
-        if (prvCounty !== curCountry) {
-
-            var cCountryStates = dictstatesListCountryWise[curCountry];
-            var selectElem = document.getElementById("state");
+    function ChangeStatesList() {
+        curCountryLoaded = useSaved ? curCountryLoaded : document.getElementById("country").value;
+        if (prvCountyLoaded !== curCountryLoaded) {
+            const cCountryStates = dictstatesListCountryWise[curCountryLoaded];
+            const selectElem = document.getElementById("state");
             selectElem.innerText = '';
-
-            for (var state of cCountryStates) {
-                var element = document.createElement("option");
+            for (const state of cCountryStates) {
+                const element = document.createElement("option");
                 element.innerText = state;
                 selectElem.append(element);
             }
-            prvCounty = curCountry;
+            prvCountyLoaded = curCountryLoaded;
+            localStorage.setItem("curCountryLoaded", curCountryLoaded);
         }
-
+        useSaved = false;
     }
+
+
 </script>
 </html>
